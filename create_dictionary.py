@@ -7,7 +7,7 @@ To create a final list of words from all text files in the folder, the following
 
 Current content in 'dictionaries' folder
 1. 20k.txt :    https://github.com/first20hours/google-10000-english/blob/master/20k.txt
-2. vocab.txt: 
+2. words.txt :  https://github.com/dwyl/english-words/blob/master/words.txt    
 '''
 
 import os
@@ -30,10 +30,14 @@ for file_name in os.listdir(filepath):
 
 all_words = list(set(all_words))
 
-with open("final_dict.txt", "w+") as f:
+with open("final_dictionary.txt", "w+") as f:
     for word in all_words:
         f.write(word+'\n')
 
-    
+
+'''
+Input: Takes in folder containing all the text files to pre-process and compile
+Output: final_dictionary.txt - final version containing a set of all the words in all the text files that were compiled
+'''
 
     
