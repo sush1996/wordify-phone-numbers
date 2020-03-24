@@ -1,8 +1,6 @@
 '''   
-number_to_words() : which takes as an argument a string representing a US phone number and which outputs a string which has
-                    transformed part or all of the phone number into a single "wordified" phone number that can be typed on a
-                    US telephone (for example, a valid output of number_to_words("1-800-724-6837") could be "1-800-PAINTER").
-                    If you find it makes things simpler, feel free to constrain this function to only output "wordifications" in English.
+all_wordifications(): which outputs all possible combinations of numbers and English
+                      words in a given phone number.
 
 
 US phone number formats taken into consideration: 
@@ -13,76 +11,71 @@ US phone number formats taken into consideration:
 '''
 
 import itertools
-import timeit
 from fix_hyphenation import fix_hyphenation_all
 
-number = "1-800-724-6837"
+#number = "1-800-724-6837"
 
-#Dictionary to relate numbers with its associated letters (referred to mobile phone keypad)
-#US phone numbers can only start from a number between 2-9 (excluding +1 part of the number)
-num_word_dict = {'2': ['A','B','C'], '3':['D','E','F'], '4':['G','H','I'], '5':['J','K','L'],
-                 '6':['M','N','O'], '7':['P','Q','R','S'], '8':['T','U','V'], '9':['W','X','Y','Z'], '0':['0']}
+def all_wordfifications(number):  #type(number) : string
 
-#Account for different styles of writing a phone number
-#Retain format for the unwordified part of the the number
+    #Dictionary to relate numbers with its associated letters (referred to mobile phone keypad)
+    #US phone numbers can only start from a number between 2-9 (excluding +1 part of the number)
+    num_word_dict = {'2': ['A','B','C'], '3':['D','E','F'], '4':['G','H','I'], '5':['J','K','L'],
+                     '6':['M','N','O'], '7':['P','Q','R','S'], '8':['T','U','V'], '9':['W','X','Y','Z'], '0':['0']}
 
-if '-' not in number:
-    
-    #Accounts for all number formats in 0.
-    if number[0] == '1':
-        start_ind = 4
-    elif number[0] == '+':
-        start_ind = 5
-    else:
-        start_ind = 3
+    #Account for different styles of writing a phone number
+    #Retain format for the unwordified part of the the number
 
-    unwordified_num = number[:start_ind]
-    num_to_wordify = number[start_ind:]
-
-else:
-    number_list = number.split('-')
-
-    #Accounts for all number formats in 1.
-    if len(number_list) == 2:
-        if len(number_list[0]) <= 2:                                                  
-            unwordified_num = number_list[0] + "-" + number_list[1][:3]
-            num_to_wordify = number_list[1][3:]
+    if '-' not in number:
+        
+        #Accounts for all number formats in 0.
+        if number[0] == '1':
+            start_ind = 4
+        elif number[0] == '+':
+            start_ind = 5
         else:
+            start_ind = 3
+
+        unwordified_num = number[:start_ind]
+        num_to_wordify = number[start_ind:]
+
+    else:
+        number_list = number.split('-')
+
+        #Accounts for all number formats in 1.
+        if len(number_list) == 2:
+            if len(number_list[0]) <= 2:                                                  
+                unwordified_num = number_list[0] + "-" + number_list[1][:3]
+                num_to_wordify = number_list[1][3:]
+            else:
+                unwordified_num = number_list[0] + "-"
+                num_to_wordify = number_list[1]
+
+        #Accounts for all number formats in 2.
+        elif len(number_list) == 3:
             unwordified_num = number_list[0] + "-"
-            num_to_wordify = number_list[1]
+            num_to_wordify = number_list[1] + number_list[2]
+        
+        #Accounts for all number formats in 3.
+        elif len(number_list) == 4:                                                 
+            unwordified_num = number_list[0] + "-" + number_list[1] + "-"
+            num_to_wordify = number_list[2] + number_list[3]
+        
+    nums_letters_list = []
 
-    #Accounts for all number formats in 2.
-    elif len(number_list) == 3:
-        unwordified_num = number_list[0] + "-"
-        num_to_wordify = number_list[1] + number_list[2]
+    for num in num_to_wordify:
+        nums_letters_list.append([num] + num_word_dict[num])  #Create the set of input lists to be used for itertools.product
+
+    wordified_nums_lists = list(itertools.product(*nums_letters_list)) #itertools.product creates a cartesian product of all the input lists
+
+    all_wordified_numbers = []
+
+    for word_list in wordified_nums_lists:
+        wordfied_num = "".join(char for char in word_list)
+        temp_var = unwordified_num + fix_hyphenation_all(wordfied_num)   #Appending the un-wordified part of the phone number to the wordified part
+        all_wordified_numbers.append(temp_var)
+
+    return all_wordified_numbers
     
-    #Accounts for all number formats in 3.
-    elif len(number_list) == 4:                                                 
-        unwordified_num = number_list[0] + "-" + number_list[1] + "-"
-        num_to_wordify = number_list[2] + number_list[3]
-    
-nums_letters_list = []
-
-for num in num_to_wordify:
-    nums_letters_list.append([num] + num_word_dict[num])  #Create the set of input lists to be used for itertools.product
-
-start = timeit.default_timer()
-wordified_nums_lists = list(itertools.product(*nums_letters_list)) #itertools.product creates a cartesian product of all the input lists
-
-all_wordified_numbers = []
-
-for word_list in wordified_nums_lists:
-    wordfied_num = "".join(char for char in word_list)
-    temp_var = unwordified_num + fix_hyphenation_all(wordfied_num)   #Appending the un-wordified part of the phone number to the wordified part
-    all_wordified_numbers.append(temp_var)
-
-end = timeit.default_timer()
-
-
-print(all_wordified_numbers)
-print(len(all_wordified_numbers))
-print(end-start)
-
 '''
 Input: 1-800-724-6837
 
@@ -105,7 +98,6 @@ Time taken: 0.05711
 '''
 
 '''
-
 Completed
 1. Take care of hyphenating the results
 2. Find publicly available english words dictionary to create only useful/desireable wordified-numbers 
