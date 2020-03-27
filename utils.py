@@ -12,7 +12,7 @@ Design:
 # alphanumeric string (without special characters) and should only be part of the 
 # phone number that needs to be wordified (i.e last 7 characters of the US phone number)
 
-def fix_hyphenation_all(alphanumeric_string): 
+def fix_hyphenation(alphanumeric_string): 
 	
 	word_count = num_count = 0
 	final_result = ""
@@ -44,13 +44,15 @@ Iterate through the alphanumerical string and keep the track of all the sub-word
 Sub-words are any consecutive set of alphabets or even just a single alphabet
 '''
 
-def extract_string(alphanumeric_string):
+def extract_strings(alphanumeric_string):
 	list_of_strings = []
 	temp_string = ""
 
 	for char in alphanumeric_string:
+		
 		if char.isalpha():
 			temp_string = temp_string + char 			# append consecutive characters to form a string and store it in a temporary variable 
+		
 		elif char.isnumeric() and temp_string != '':
 			list_of_strings.append(temp_string)         # append the fully-formed sub-word to a list
 			temp_string = ""                            # reset temporary variable to include the next sub-word
@@ -62,8 +64,15 @@ def extract_string(alphanumeric_string):
     # we don't need the '' in our return
 	return list_of_strings[:-1] if list_of_strings[-1] == '' else list_of_strings
 
-
+def count_alphabets(alphanumeric_string):
+	count = 0
+	for char in alphanumeric_string:
+		if char.isalpha():
+			count += 1
+	return count
+	
 def keypad():
+	# dictionary to relate numbers with its associated letters (referred to mobile phone keypad)
     num_word_dict = {'2': ['A','B','C'], '3':['D','E','F'], '4':['G','H','I'], '5':['J','K','L'],
                      '6':['M','N','O'], '7':['P','Q','R','S'], '8':['T','U','V'], '9':['W','X','Y','Z'], '0':['0']}
 
