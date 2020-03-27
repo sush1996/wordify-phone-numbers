@@ -61,9 +61,7 @@ def filtered_wordifications(number, dictionary): # type(number) : string, type(d
 
     wordified_nums_lists = list(itertools.product(*nums_letters_list))  # itertools.product creates a cartesian product of all the input lists
 
-    filtered_wordified_numbers = []
-    
-    # filtered Combinations
+    # filtered combinations
     dictionary = open(dictionary).readlines()
     dictionary = list(map(lambda line: line.strip('\n'), dictionary))
     dict_of_words = {word for word in dictionary}	# put the list of words in a hashmap, allows for much faster querying
@@ -89,8 +87,6 @@ def filtered_wordifications(number, dictionary): # type(number) : string, type(d
     # sort the results by the number of alphabets in the wordified number
     # puts better results at the front of the list than results yielded by sorting by the count of '-' 
     filtered_wordified_numbers = sorted(filtered_wordified_numbers, key=count_alphabets, reverse=True) 
-
-    end = time.time()
 
     return filtered_wordified_numbers      # type(all_wordified_numbers) : list of strings
 
