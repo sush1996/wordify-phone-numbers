@@ -11,7 +11,7 @@ US phone number formats taken into consideration:
 '''
 
 import itertools
-from fix_hyphenation import *
+from utils import *
 
 # number = "1-800-724-6837"
 
@@ -75,7 +75,7 @@ def all_wordifications(number):  # type(number) : string
         temp_var = unwordified_num + fix_hyphenation_all(wordfied_num)   # appending the un-wordified part of the phone number to the wordified part
         all_wordified_numbers.append(temp_var)
 
-    return all_wordified_numbers   # type(all_wordified_nmbers) : list of strings
+    return all_wordified_numbers   # type(all_wordified_numbers) : list of strings
    
 '''
 Input: 1-800-724-6837
