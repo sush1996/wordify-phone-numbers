@@ -15,7 +15,7 @@ from fix_hyphenation import fix_hyphenation_all
 
 #number = "1-800-724-6837"
 
-def all_wordfifications(number):  #type(number) : string
+def all_wordifications(number):  #type(number) : string
 
     #Dictionary to relate numbers with its associated letters (referred to mobile phone keypad)
     #US phone numbers can only start from a number between 2-9 (excluding +1 part of the number)
