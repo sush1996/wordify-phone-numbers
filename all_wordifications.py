@@ -17,10 +17,8 @@ from utils import *
 
 def all_wordifications(number):  # type(number) : string
 
-    # dictionary to relate numbers with its associated letters (referred to mobile phone keypad)
     # US phone numbers can only start from a number between 2-9 (excluding +1 part of the number)
-    num_word_dict = {'2': ['A','B','C'], '3':['D','E','F'], '4':['G','H','I'], '5':['J','K','L'],
-                     '6':['M','N','O'], '7':['P','Q','R','S'], '8':['T','U','V'], '9':['W','X','Y','Z'], '0':['0']}
+    num_word_dict, _ = keypad() 
 
     # account for different styles of writing a phone number
     # retain format for the unwordified part of the the number
@@ -69,14 +67,14 @@ def all_wordifications(number):  # type(number) : string
 
     all_wordified_numbers = []
 
-    #all combinations
+    # all combinations
     for word_list in wordified_nums_lists:
-        wordfied_num = "".join(char for char in word_list)
-        temp_var = unwordified_num + fix_hyphenation_all(wordfied_num)   # appending the un-wordified part of the phone number to the wordified part
+        word_string = "".join(char for char in word_list)
+        temp_var = unwordified_num + fix_hyphenation(word_string)   # appending the un-wordified part of the phone number to the wordified part
         all_wordified_numbers.append(temp_var)
 
     return all_wordified_numbers   # type(all_wordified_numbers) : list of strings
-   
+
 '''
 Input: 1-800-724-6837
 
