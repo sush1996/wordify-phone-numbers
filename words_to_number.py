@@ -6,7 +6,7 @@ Function Design:
 does the reverse of number_to_words (for example, the output of words_to_number("1-800-PAINTER") should be "1-800-724-6837")
 '''
 
-from utils import keypad, convert_to_format
+from Utils.utils import keypad, convert_to_format
 
 # The function takes in the wordified number and your desired number format as the template
 # and converts the wordified number to the desired format.
