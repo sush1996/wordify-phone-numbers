@@ -3,89 +3,62 @@ Results from all_wordifications are filtered down to meaningful words by making 
 Same code structure as all_wordifications.py but incorporates a dictionary to only take dictionary words into account.
 
 Results are highly dependent on the dictionary that is used to filter the words.
-I've chosen to incorporate the biggest dictionary
+I've chosen to incorporate a big dictionary by documenting a set of other smaller dictionaries 
 
 Current content in 'dictionaries' folder
 1. 20k.txt :    https://github.com/first20hours/google-10000-english/blob/master/20k.txt
-2. words.txt :  https://github.com/dwyl/english-words/blob/master/words.txt    
+2. words.txt :  https://github.com/dwyl/english-words/blob/master/words.txt
+
+create_dictionary() in utils.py outputs final_dictionary.txt or 20k_final_dictionary.txt
 '''
 
 import itertools
 from utils import *
 
-def filtered_wordifications(number, dictionary): # type(number) : string, type(dictionary) : string, dcitonary should be a filename or filepath 
-    num_word_dict, _ = keypad()        # fetches us the dictionary needed for converting numbers to words
+# number = "1-800-724-6837"
+# dictionary = "final_dictionary.txt" or "20k_final_dictionary.txt"
 
-    # account for different styles of writing a phone number
-    # retain format for the unwordified part of the the number
+def filtered_wordifications(number, dictionary): # type(number) : string, type(dictionary) : string, dictionary should be a filename or filepath 
+    num_word_dict, _ = keypad()                  # fetches us the dictionary needed for converting numbers to words
 
-    if '-' not in number:
-        
-        # accounts for all number formats in 0.
-        if number[0] == '1':
-            start_ind = 4
-        elif number[0] == '+':
-            start_ind = 5
-        else:
-            start_ind = 3
-
-        unwordified_num = number[:start_ind]
-        num_to_wordify = number[start_ind:]
-
-    else:
-        number_list = number.split('-')
-
-        # accounts for all number formats in 1.
-        if len(number_list) == 2:
-            if len(number_list[0]) <= 2:                                                  
-                unwordified_num = number_list[0] + "-" + number_list[1][:3]
-                num_to_wordify = number_list[1][3:]
-            else:
-                unwordified_num = number_list[0] + "-"
-                num_to_wordify = number_list[1]
-
-        # accounts for all number formats in 2.
-        elif len(number_list) == 3:
-            unwordified_num = number_list[0] + "-"
-            num_to_wordify = number_list[1] + number_list[2]
-        
-        # accounts for all number formats in 3.
-        elif len(number_list) == 4:                                                 
-            unwordified_num = number_list[0] + "-" + number_list[1] + "-"
-            num_to_wordify = number_list[2] + number_list[3]
-        
+    unwordified_num, num_to_wordify = split_number(number)  
     nums_letters_list = []
 
     for num in num_to_wordify:
-        nums_letters_list.append([num] + num_word_dict[num])  # create the set of input lists to be used for itertools.product
+        nums_letters_list.append([num] + num_word_dict[num])            # create the set of input lists to be used for itertools.product
 
     wordified_nums_lists = list(itertools.product(*nums_letters_list))  # itertools.product creates a cartesian product of all the input lists
 
     # filtered combinations
     dictionary = open(dictionary).readlines()
     dictionary = list(map(lambda line: line.strip('\n'), dictionary))
-    dict_of_words = {word for word in dictionary}	# put the list of words in a hashmap, allows for much faster querying
+    dict_of_words = {word for word in dictionary}	             # optimization: put the list of words in a hashmap, allows for much faster querying
 
-    wordified_nums_lists = wordified_nums_lists[1:]     # the number itself will be included since it's a valid combination, but we don't need it
+    wordified_nums_lists = wordified_nums_lists[1:]          # the number itself will be included since it's a valid combination, but we don't need it
 	
+    filtered_wordified_numbers = []
+
     for word_list in wordified_nums_lists:
         word_string = "".join(char for char in word_list)
         list_of_subwords = extract_strings(word_string)     # extract_string fetches the sub-words available in an alphanumerical string
 
         flag = 0
         
-        # if the wordfified number has multiple sub-words, then we consider the number if and only if all the sub-words are a part of the dictionary
+        # if the wordfified number has multiple sub-words, then 
+        # we consider the number if and only if all the sub-words are a part of the dictionary
         for sub_word in list_of_subwords:
             if sub_word not in dict_of_words:		
-                flag = 1
-                break
+                flag = 1                       # indicate presence of sub-words not present in dictionary                  
+                break                     # optimization: stop comparing with the dictionary if even a single sub-word in the list fails to match
 
-        if flag == 0:
+        if flag == 0:                          # indication that we're good to go ahead and format the wordified number
             temp_var = unwordified_num + fix_hyphenation(word_string)
             filtered_wordified_numbers.append(temp_var)
 
-    # sort the results by the number of alphabets in the wordified number
-    # puts better results at the front of the list than results yielded by sorting by the count of '-' 
+    # sort the results by the number of alphabets in the wordified number - count_alphabets
+    # puts better results at the front of the list than results yielded by sorting on the count of '-'
+    # reversing the list ensures we get the longer words  at the front of the list 
+    # assumption: longer words are more desireable - not strictly true, but will do for now   
     filtered_wordified_numbers = sorted(filtered_wordified_numbers, key=count_alphabets, reverse=True) 
 
     return filtered_wordified_numbers      # type(all_wordified_numbers) : list of strings
