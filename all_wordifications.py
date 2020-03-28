@@ -7,7 +7,7 @@ which outputs all possible combinations of numbers and English words in a given 
 '''
 
 import itertools
-from utils import split_number, fix_hyphenation
+from Utils.utils import split_number, fix_hyphenation, keypad
 
 # number = "1-800-724-6837"
 
@@ -35,7 +35,7 @@ def all_wordifications(number):  # type(number) : string
     return all_wordified_numbers   # type(all_wordified_numbers) : list of strings
 
 '''
-Input: 1-800-724-6837
+Input: "1-800-724-6837"
 
 Output: 
 
