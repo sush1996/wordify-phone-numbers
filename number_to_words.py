@@ -9,7 +9,7 @@ part or all of the phone number into a single "wordified" phone number that can 
 things simpler, feel free to constrain this function to only output "wordifications" in English.
 '''
 
-from filtered_wordifications import filtered_wordifications
+from Utils.filtered_wordifications import filtered_wordifications
 
 # number = "1-800-724-6837"
 # dictionary = "final_dictionary.txt" or "20k_final_dictionary.txt"
