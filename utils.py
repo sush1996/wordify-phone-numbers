@@ -146,7 +146,7 @@ def convert_to_format(wordified_string, number_format): # type(wordified_string)
 	while i < len(wordified_list) and j < len(number_format):
 		
 		# deals with cases where number_format has more non-alphanumeric characters than wordified_string
-		if wordified_list[i].isalnum() and number_format[j].isalnum() == False:   
+		if wordified_list[i].isalnum() and number_format[j].isalnum() == False or number_format[j] == '1':   
 			wordified_list.insert(i, number_format[j])	
 		
 		# deals with cases where wordified_string has more non-alphanumeric characters than number_format
