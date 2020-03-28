@@ -1,17 +1,13 @@
-'''   
-all_wordifications(): which outputs all possible combinations of numbers and English
-                      words in a given phone number.
+'''
+Function: all_wordifications()
 
+Function Design: 
 
-US phone number formats taken into consideration: 
-0. +1xxxxxxxxxxx, 1xxxxxxxxxxx, xxxxxxxxxx
-1. +1-xxxxxxxxxxx, +1xxx-xxxxxxx, 1xxx-xxxxxxx
-2. +1xxx-xxx-xxxx, 1xxx-xxx-xxxx, xxx-xxx-xxxx
-3. +1-xxx-xxx-xxxx, 1-xxx-xxx-xxxx  
+which outputs all possible combinations of numbers and English words in a given phone number.
 '''
 
 import itertools
-from utils import *
+from utils import split_number, fix_hyphenation
 
 # number = "1-800-724-6837"
 
@@ -20,44 +16,7 @@ def all_wordifications(number):  # type(number) : string
     # US phone numbers can only start from a number between 2-9 (excluding +1 part of the number)
     num_word_dict, _ = keypad() 
 
-    # account for different styles of writing a phone number
-    # retain format for the unwordified part of the the number
-
-    if '-' not in number:
-        
-        # accounts for all number formats in 0.
-        if number[0] == '1':
-            start_ind = 4
-        elif number[0] == '+':
-            start_ind = 5
-        else:
-            start_ind = 3
-
-        unwordified_num = number[:start_ind]
-        num_to_wordify = number[start_ind:]
-
-    else:
-        number_list = number.split('-')
-
-        # accounts for all number formats in 1.
-        if len(number_list) == 2:
-            if len(number_list[0]) <= 2:                                                  
-                unwordified_num = number_list[0] + "-" + number_list[1][:3]
-                num_to_wordify = number_list[1][3:]
-            else:
-                unwordified_num = number_list[0] + "-"
-                num_to_wordify = number_list[1]
-
-        # accounts for all number formats in 2.
-        elif len(number_list) == 3:
-            unwordified_num = number_list[0] + "-"
-            num_to_wordify = number_list[1] + number_list[2]
-        
-        # accounts for all number formats in 3.
-        elif len(number_list) == 4:                                                 
-            unwordified_num = number_list[0] + "-" + number_list[1] + "-"
-            num_to_wordify = number_list[2] + number_list[3]
-        
+    unwordified_num, num_to_wordify = split_number(number) 
     nums_letters_list = []
 
     for num in num_to_wordify:
