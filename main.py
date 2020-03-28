@@ -1,9 +1,10 @@
-from create_dictionary import *
+from Utils.filtered_wordifications import *
+from Utils.create_dictionary import *
+from Utils.utils import *
+
+from all_wordifications import *
 from number_to_words import *
 from words_to_number import *
-from all_wordifications import *
-from filtered_wordifications import *
-from utils import *
 
 import argparse
 
@@ -21,19 +22,19 @@ parser.add_argument("-f", "--format", action = "store",
 parser.add_argument("-a", "--all", action = "store",
     dest = "all", help = "Find all Wordifications of a US Phone Number")
 
-parser.add_argument("-filtered", "--filtered", action = "store",
+parser.add_argument("-filter", "--filtered", action = "store",
     dest = "filtered", help = "Find the Filtered Wordifications of a US Phone Number")
 
 parser.add_argument("-d", "--dict", action = "store",
-    dest = "dict", default = "final_dictionary.txt",
+    dest = "dict", default = "Utils/20k_final_dictionary.txt",
     help = "Specify Dictionary")
 
 parser.add_argument("-i", "--input", action = "store",
-    dest = "input", default = "dictionaries/",
+    dest = "input", default = "Dictionaries/",
     help = "Provide the directory path which contains the smaller dictionaries")
 
 parser.add_argument("-o", "--output", action = "store",
-    dest = "output", default = "final_dictionaries_custom.txt",
+    dest = "output", default = "Utils/custom_final_dictionary.txt",
     help = "Provide the filepath (including a filename of your choice) to output the final dictionary")
 
 parser.add_argument("-c", "--create", action = "store",
