@@ -11,8 +11,8 @@ To create a final list of words from all text files in the folder, the following
 
 Current content in 'dictionaries' folder
 
-i. 20k.txt :    https://github.com/first20hours/google-10000-english/blob/master/20k.txt
-ii. words.txt :  https://github.com/dwyl/english-words/blob/master/words.txt    
+i.   20k.txt :               https://github.com/first20hours/google-10000-english/blob/master/20k.txt
+ii.  words.txt :             https://github.com/dwyl/english-words/blob/master/words.txt    
 '''
 
 import os
