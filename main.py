@@ -10,10 +10,10 @@ import argparse
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-w", "--wordify", action = "store",
+parser.add_argument("-n", "--wordify", action = "store",
     dest = "number", help = "Suggest a Wordification for the US Phone Number")
 
-parser.add_argument("-n", "--numerize", action = "store",
+parser.add_argument("-w", "--numerize", action = "store",
     dest = "word", help = "Convert the Wordified Number to a Phone Number")
 
 parser.add_argument("-f", "--format", action = "store",
@@ -26,7 +26,7 @@ parser.add_argument("-filter", "--filtered", action = "store",
     dest = "filtered", help = "Find the Filtered Wordifications of a US Phone Number")
 
 parser.add_argument("-d", "--dict", action = "store",
-    dest = "dict", default = "Utils/20k_final_dictionary.txt",
+    dest = "dict", default = "Utils/words_alpha_mod.txt",
     help = "Specify Dictionary")
 
 parser.add_argument("-i", "--input", action = "store",
