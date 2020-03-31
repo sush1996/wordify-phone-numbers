@@ -184,10 +184,32 @@ def convert_to_format(wordified_string, number_format): # type(wordified_string)
 	wordified_list = list(wordified_string)
 	i = j = 0
 
+	# Hardcoding the conversions for the +1/1 part of the phone number
+	if wordified_string[0] != "1" and number_format[0] == "1":
+		wordified_list.insert(0, "1")	
+	
+	elif wordified_string[0] == "1" and number_format[0] != "1":
+		wordified_list.pop(0)	
+
+	if wordified_string[0] != "+" and number_format[0] == "+":
+		if wordified_string[1] == "1":
+			wordified_list.insert(0, "+")
+		else:
+			wordified_list.insert(0, '1')
+			wordified_list.insert(0, '+')	
+	
+	elif wordified_string[0] == "+" and number_format[0] != "+":
+		if number_format[1] == "1":
+			wordified_list.pop(0)
+		else:
+			wordified_list.pop(0)
+			wordified_list.pop(0)	
+	
+
 	while i < len(wordified_list) and j < len(number_format):
 		
 		# deals with cases where number_format has more non-alphanumeric characters than wordified_string
-		if wordified_list[i].isalnum() and number_format[j].isalnum() == False or number_format[j] == '1':   
+		if wordified_list[i].isalnum() and number_format[j].isalnum() == False:   
 			wordified_list.insert(i, number_format[j])	
 		
 		# deals with cases where wordified_string has more non-alphanumeric characters than number_format
