@@ -17,7 +17,8 @@ parser.add_argument("-w", "--numerize", action = "store",
     dest = "word", help = "Convert the Wordified Number to a Phone Number")
 
 parser.add_argument("-f", "--format", action = "store",
-    dest = "format", help = "Specify a Format for Conversion to a Phone Number")
+    dest = "format", default="1-xxx-xxx-xxxx",
+    help = "Specify a Format for Conversion to a Phone Number")
 
 parser.add_argument("-a", "--all", action = "store",
     dest = "all", help = "Find all Wordifications of a US Phone Number")
