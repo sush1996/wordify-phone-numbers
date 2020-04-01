@@ -28,7 +28,7 @@ A few examples are demonstrated as below:
 
 # Sample Output
 Open terminal in the same directory as `main.py` and run: <br />
-```
+
 * `Input Command:` `python3 main.py -a 1-800-724-6837` <br />
 ```
 Output:
@@ -68,6 +68,7 @@ Output:
 	.
 	.
 Found 239 Wordifications
+```
 
 * `Input Command:` `python3 main.py -n 1-800-724-6837 ` <br />
 ```
