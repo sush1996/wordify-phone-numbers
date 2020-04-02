@@ -232,8 +232,8 @@ Function Design:
 '''
 
 def extract_substrings(string):   # string can contain special, numerical and alphabetical characters
-	string_list, words_set, words_list = [], set(), []
 	
+	string_list, words_list = [], []
 	temp_word, temp_num = "", ""
 	
 	for char in string:
@@ -248,7 +248,6 @@ def extract_substrings(string):   # string can contain special, numerical and al
 		else:
 			if temp_word != "":
 				string_list.append(temp_word)         
-				words_set.add(temp_word)
 				words_list.append(temp_word)
 				temp_word = ""
 						
@@ -259,13 +258,12 @@ def extract_substrings(string):   # string can contain special, numerical and al
 	
 	else:
 		string_list.append(temp_word)
-		words_set.add(temp_word)
 		words_list.append(temp_word)
 
 	# return both a set and a list
 	# set is used for checking in the dictionary - optimiation
 	# set is not ordered so a list is also generated to preserve the order during final wordification
-	return string_list, words_set, words_list 
+	return string_list, words_list 
 
 
 '''
@@ -355,16 +353,13 @@ def get_substring_combos(subword, combos_dict): # type(subword): string, type(co
 		
 		# generate sub-strings based on the all the possible combinations
 		for i, j in zip(temp_list[:-1], temp_list[1:]):
-			temp_substrings_set.add(subword[i:j])
 			temp_substrings_list.append(subword[i:j])
 		
-		set_substrings.append(temp_substrings_set)
 		list_substrings.append(temp_substrings_list)
+		
+	return list_substrings
 
-	# return both a set and a list
-	# set is used for checking in the dictionary - optimiation
-	# set is not ordered so a list is also generated to preserve the order during final wordification 
-	return set_substrings, list_substrings
+
 '''
 Function: get_desired_wordifications()
 
@@ -385,17 +380,24 @@ ii.  if all the subwords (with len <4) are present in the dictionary and subword
 
 iii. if all subwords (with len <4) are present in the dictionary then DO NOT invoke the function
 iv.  if any subwords (with len <4) is NOT present in the dictionary then DO NOT invoke the function
+
+v. if there are 2 subword both with (len >=4) then we would like to take into consideration the 
+	combination of splits of both the subwords.
+	
+	- eg. if the string under consideration is: PAINT-GOPRO, then the combinations:
+		PAINT-GO-PRO, PA-INT-GO-PRO would both be valid and should be taken into consideration
 '''
 
 # string, can also contain special characters
 # dictionary: is the reference manual for word validity
 # combos_dict: dictionary (hashmap) of lengths and their combinations
-
-## Duct tape solution very slow and inelegant.
 	
 def get_desired_wordifications(string, dictionary, combos_dict):  
-	string_list, words_set, words_list = extract_substrings(string)
-	list_of_substrs = [] # should finally contain all possible valid wordififed numbers 
+	
+	string_list, words_list = extract_substrings(string)
+	
+	list_of_substrs = [] 							# should finally contain all possible valid wordififed numbers 
+	
 	reference = string_list.copy()
 	temp_reference = string_list.copy()
 
@@ -408,55 +410,68 @@ def get_desired_wordifications(string, dictionary, combos_dict):
 	# check the number of words with length greater than equal to 4
 	big_count_flag = sum([1 for word in words_list if len(word)>=4])
 	
+	# fetch words which are strictly >=4 in length
 	big_words = [word for word in words_list if len(word)>=4]
 	
 	# check if any subword with length greater than equal to 4 belongs is present in the dictionary
 	big_any_flag = any(word not in dictionary for word in words_list if len(word)>=4)
 
-	# accounting for conditions i, ii, iii and iv for deciding the wordified numbers
-	if all_flag or (small_all_flag and big_any_flag):                           # criteria i, ii, iv
+	# accounting for criteria i, ii, iii and iv for deciding the wordified numbers
+	if all_flag or (small_all_flag and big_any_flag):                           
 		if all_flag:
-			list_of_substrs.append(''.join(element for element in string_list))	# criteria iii
+			list_of_substrs.append(''.join(element for element in string_list))	
 
-		if big_count_flag == 1:
+		# criteria ii
+		if big_count_flag == 1:					
 
-			sub_strings_set, sub_strings_list = get_substring_combos(big_words[0], combos_dict)
+			# lists are needed to maintain order when wordifying
+			sub_strings_list1 = get_substring_combos(big_words[0], combos_dict)  
 			
-			sub_strings_set.append({big_words[0]})
-			sub_strings_list.append({big_words[0]})
-						
-			for sub_set, sub_list in zip(sub_strings_set, sub_strings_list):
-				if sub_set.issubset(dictionary):
-							
-					new_substr = '-'.join(element for element in sub_list)
-					temp_reference[reference.index(big_words[0])] = new_substr
-					list_of_substrs.append(''.join(element for element in temp_reference))			
-	
-	# accounts for the case when we have two (len>=4) words in the set
-	if big_count_flag == 2:
-		
-		sub_strings_set1, sub_strings_list1 = get_substring_combos(big_words[0], combos_dict)
-		sub_strings_set2, sub_strings_list2 = get_substring_combos(big_words[1], combos_dict)
-		
-		# accounting for the case when one of the (len>=4) word is in the dictionary 
-		sub_strings_set1.append({big_words[0]})
-		sub_strings_set2.append({big_words[1]})
-		
-		sub_strings_list1.append([big_words[0]])
-		sub_strings_list2.append([big_words[1]])
-		
-		for sub_set1, sub_list1 in zip(sub_strings_set1, sub_strings_list1):
-			for sub_set2, sub_list2 in zip(sub_strings_set2, sub_strings_list2):
-				if sub_set1.union(sub_set2).issubset(dictionary):						
+			# for when the word itself may be present and not just its subwords
+			sub_strings_list1.append({big_words[0]})
+
+			# sets are faster to check against other sets
+			sub_strings_set1 = [set(list_ele) for list_ele in sub_strings_list1] 
+			
+			for sub_set1, sub_list1 in zip(sub_strings_set1, sub_strings_list1):
+				if sub_set1.issubset(dictionary):
 					
 					new_substr1 = '-'.join(element for element in sub_list1)
-					new_substr2 = '-'.join(element for element in sub_list2)
-
 					temp_reference[reference.index(big_words[0])] = new_substr1
-					temp_reference[reference.index(big_words[1])] = new_substr2
-					
 					list_of_substrs.append(''.join(element for element in temp_reference))			
+		
+		# criteria v
+		elif big_count_flag ==2:
 			
+			# in a 10 digit US phone number, there can be a maximum of only 2 subwords
+			# that have lenghts >= 4, which is why we are able to hard-code this criteria v
+			# duct-tape solution and very slow! Find a better method.
+
+			sub_strings_list1 = get_substring_combos(big_words[0], combos_dict)
+			sub_strings_list2 = get_substring_combos(big_words[1], combos_dict)
+			
+			# for when the word itself may be present and not just its subwords
+			sub_strings_list1.append({big_words[0]})
+			sub_strings_list2.append({big_words[1]})
+			
+			sub_strings_set1 = [set(list_ele) for list_ele in sub_strings_list1]
+			sub_strings_set2 = [set(list_ele) for list_ele in sub_strings_list2]
+			
+			for sub_set1, sub_list1 in zip(sub_strings_set1, sub_strings_list1):
+				if sub_set1.issubset(dictionary) == False:
+					continue
+				else:
+					for sub_set2, sub_list2 in zip(sub_strings_set2, sub_strings_list2):
+						if sub_set1.union(sub_set2).issubset(dictionary):						
+					
+							new_substr1 = '-'.join(element for element in sub_list1)
+							new_substr2 = '-'.join(element for element in sub_list2)
+
+							temp_reference[reference.index(big_words[0])] = new_substr1
+							temp_reference[reference.index(big_words[1])] = new_substr2
+							
+							list_of_substrs.append(''.join(element for element in temp_reference))
+
 	return list_of_substrs
 
 
