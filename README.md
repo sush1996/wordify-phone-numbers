@@ -113,3 +113,8 @@ Dictionaries containing the most frequently found english wordsfound in other Gi
 
 `create_dictionary` can combine multiple dictionaries and pre-process the words to store them in a single `.txt` file. Or just pre-process the words in a single file.
 Pre-process steps: Filter words less than length 2 and greater than length 10 and also filter all words with special characters in them. Finally capitalize each of the non filtered word and store them in a text file.  
+
+# Notes
+
+* The `filtered_wordifications` takes roughly ~30 seconds for numbers which don't have any 0's or 1's. But takes less than 1 second for other numbers.
+Consider coming up with a better approach to wordify since current method is built on a case-by-case basis and takes a long time for certain numbers.
