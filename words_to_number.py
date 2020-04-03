@@ -10,8 +10,10 @@ from Utils.utils import keypad, convert_to_format
 
 # The function takes in the wordified number and your desired number format as the template
 # and converts the wordified number to the desired format.
+# eg. if wordified number has the format: xxxxxxxxxx
+#	then the desired number_format can for eg. 1-xxx-xxx-xxxx
 
-# The number_format has to have the same number of alphanumerical characters as your wordified number 
+# The number_format has to have the same number of alphanumerical characters (excluding +1/1) as your wordified number 
 
 def words_to_number(wordified_num, number_format): # type(wordified_num) : string, type(number_format) : string
 	
