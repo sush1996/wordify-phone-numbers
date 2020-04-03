@@ -123,7 +123,7 @@ Function Design:
 # alphanumeric_string format: xxxxxxxxxx (x will be alphanumerical)
 
 
-# ** hardcoded the rules for this method on a case by case basis, there might be some tiny errors
+# ** hardcoded the rules for this method on a case by case basis
 # ** come up with a more elegant solution
 def fix_hyphenation(alnum_str): #type(alnum_str) : string which can contain only alphabetical and numrical characters 
 	
@@ -135,7 +135,8 @@ def fix_hyphenation(alnum_str): #type(alnum_str) : string which can contain only
 		# to maintain end structure
 		if ind == len(alnum_str)-4 and num_char.isnumeric():
 			final_result = final_result + '-'			
-	
+		
+		# keep a running track of numericals
 		if not num_char.isnumeric():
 			if num_count > 0:
 			   final_result = final_result + "-"
@@ -143,7 +144,8 @@ def fix_hyphenation(alnum_str): #type(alnum_str) : string which can contain only
 			num_count = 0
 			final_result = final_result + num_char
 			word_count += 1
-	
+		
+		# keep a running track of alphabets
 		elif num_char.isnumeric():
 			if ind > 0 and word_count > 0:
 				final_result = final_result + "-" 	
@@ -260,9 +262,9 @@ def extract_substrings(string):   # string can contain special, numerical and al
 		string_list.append(temp_word)
 		words_list.append(temp_word)
 
-	# return both a set and a list
-	# set is used for checking in the dictionary - optimiation
-	# set is not ordered so a list is also generated to preserve the order during final wordification
+	# return a list of the string - will be used as template for adding wordifications
+	# return a list of the words (contiguous alphabetical sub-strings) to check be checked
+	# 	for presence in the dictionary 
 	return string_list, words_list 
 
 
@@ -293,31 +295,34 @@ def comb_perm():
 	# Computationally very expensive to generate permutations, so I've hardcoded the 
 	#   set of permutations and combinations into a dictionary.
 	
-	# Only interested in combinations with length > 4 
+	# Only interested in combinations with length >= 4 
 	
 	# key: string length
 	# value: list of sub-lengths > 1 (not interested in length 1 sub-words) which add upto to the string length (key)
 
-	comb_perm_dict = {	4: [(2, 2)],
+	comb_perm_dict = {	
+
+				4: [(2, 2)],
 					 	
-					 	5: [(3, 2), (2, 3)],
+				5: [(3, 2), (2, 3)],
 					  	
-					  	6: [(4, 2), (2, 2, 2), (2, 4), (3, 3)], 
+				6: [(4, 2), (2, 2, 2), (2, 4), (3, 3)], 
 						
-						7: [(2, 3, 2), (5, 2), (3, 2, 2), (2, 5), (4, 3), (2, 2, 3), (3, 4)], 
+				7: [(2, 3, 2), (5, 2), (3, 2, 2), (2, 5), (4, 3), (2, 2, 3), (3, 4)], 
 						
-						8: [(4, 2, 2), (2, 6), (3, 3, 2), (2, 2, 2, 2), (2, 2, 4), (2, 3, 3), 
-						   (4, 4), (2, 4, 2), (6, 2), (5, 3), (3, 2, 3), (3, 5)],
+				8: [(4, 2, 2), (2, 6), (3, 3, 2), (2, 2, 2, 2), (2, 2, 4), (2, 3, 3), 
+					 (4, 4), (2, 4, 2), (6, 2), (5, 3), (3, 2, 3), (3, 5)],
 						
-						9: [(2, 7), (3, 3, 3), (5, 4), (2, 2, 5), (2, 4, 3), (4, 5), (2, 2, 2, 3),
-							(2,2,3,2), (2,3,2,2), (3,2,2,2), (4, 3, 2), (6, 3), (4, 2, 3), (5, 2, 2),
-							(3, 6), (3, 4, 2), (2, 3, 4), (2, 5, 2), (7, 2), (3, 2, 4)],
+				9: [(2, 7), (3, 3, 3), (5, 4), (2, 2, 5), (2, 4, 3), (4, 5), (2, 2, 2, 3),
+					(2,2,3,2), (2,3,2,2), (3,2,2,2), (4, 3, 2), (6, 3), (4, 2, 3), (5, 2, 2),
+					(3, 6), (3, 4, 2), (2, 3, 4), (2, 5, 2), (7, 2), (3, 2, 4)],
 						
-						10:[(2, 3, 5), (7, 3), (2, 3, 3, 2), (2, 8), (4, 3, 3), (2, 2, 2, 2, 2), (3, 7), (3, 4, 3),
-						   (5, 2, 3), (5, 5), (3, 2, 2, 3), (2, 3, 2, 3), (3, 3, 4), (6, 2, 2), (2, 4, 4), (2, 5, 3),
-						   (6, 4), (2, 6, 2), (8, 2), (2, 2, 3, 3), (2, 2, 6), (2, 2, 2, 4), (5, 3, 2), (3, 5, 2),
-						   (3, 2, 3, 2), (4, 2, 4), (3, 2, 5), (4, 6), (3, 3, 2, 2), (4, 4, 2),
-						   (4,2,2,2), (2, 2, 4, 2), (2, 4, 2, 2)]
+				10:[(2, 3, 5), (7, 3), (2, 3, 3, 2), (2, 8), (4, 3, 3), (2, 2, 2, 2, 2), (3, 7), (3, 4, 3),
+					(5, 2, 3), (5, 5), (3, 2, 2, 3), (2, 3, 2, 3), (3, 3, 4), (6, 2, 2), (2, 4, 4), (2, 5, 3),
+					(6, 4), (2, 6, 2), (8, 2), (2, 2, 3, 3), (2, 2, 6), (2, 2, 2, 4), (5, 3, 2), (3, 5, 2),
+					(3, 2, 3, 2), (4, 2, 4), (3, 2, 5), (4, 6), (3, 3, 2, 2), (4, 4, 2),
+					(4,2,2,2), (2, 2, 4, 2), (2, 4, 2, 2)]
+					
 					}
 
 	return comb_perm_dict
@@ -328,9 +333,9 @@ Function: get_substring_combos()
 
 Functions Design:
 
-To generate the sub-strings based on the combinations. The need fot this functions is shown by an example below:
+To generate the sub-strings based on the combinations. The need for this functions is shown by an example below:
 
-eg. consider the subword PAINTER - while the word itself belongs to the dictionary but its constituent splits may also belong in
+eg. consider the subword PAINTER - while the word itself belongs to the dictionary, its constituent splits may also belong in
     the dictionary:
 	
 	Length of parent string: PAINTER = 7
@@ -343,13 +348,14 @@ def get_substring_combos(subword, combos_dict): # type(subword): string, type(co
 	set_substrings, list_substrings = [], []
 	
 	string_lengths = combos_dict[len(subword)]  # gets the list of all possible combinations summing to a particular length
+	
 	for tup in string_lengths:
 		temp_list = [0]	
 		
 		for element in tup:
 			temp_list.append(temp_list[-1] + element)
 		
-		temp_substrings_list, temp_substrings_set = [], set()
+		temp_substrings_list = []
 		
 		# generate sub-strings based on the all the possible combinations
 		for i, j in zip(temp_list[:-1], temp_list[1:]):
@@ -372,7 +378,8 @@ Criteria to invoke get_substring_combos():
 i.   if all the subwords (with len <4 or with len >=4) in the string are present in a dictionary
 		- we do this for including the possibility that, if the subword (with len >=4) is present then its combinations of
 		  continguous splits may also be present (check example in get_substrings_combos() above)
-		eg: MAYTOP - Not a valid word but MAY and TOP are.
+	
+	- eg: MAYTOP - Not a valid word but when split the sub-words: MAY and TOP are valid.
 
 ii.  if all the subwords (with len <4) are present in the dictionary and subwords (with len >=4) is NOT present in the dictionary
 		- we do this for including the possibility that, if the subword (with len >=4) is not present then its combinations of
@@ -381,8 +388,8 @@ ii.  if all the subwords (with len <4) are present in the dictionary and subword
 iii. if all subwords (with len <4) are present in the dictionary then DO NOT invoke the function
 iv.  if any subwords (with len <4) is NOT present in the dictionary then DO NOT invoke the function
 
-v. if there are 2 subword both with (len >=4) then we would like to take into consideration the 
-	combination of splits of both the subwords.
+v. 	 if there are 2 subword both with (len >=4) then we would like to take into consideration the 
+		combination of splits of both the subwords.
 	
 	- eg. if the string under consideration is: PAINT-GOPRO, then the combinations:
 		PAINT-GO-PRO, PA-INT-GO-PRO would both be valid and should be taken into consideration
@@ -398,6 +405,7 @@ def get_desired_wordifications(string, dictionary, combos_dict):
 	
 	list_of_substrs = [] 							# should finally contain all possible valid wordififed numbers 
 	
+	# create a template to be used when adding the wordifications
 	reference = string_list.copy()
 	temp_reference = string_list.copy()
 
@@ -418,25 +426,31 @@ def get_desired_wordifications(string, dictionary, combos_dict):
 
 	# accounting for criteria i, ii, iii and iv for deciding the wordified numbers
 	if all_flag or (small_all_flag and big_any_flag):                           
+		
+		# if every single sub-word is in the dictionary 
 		if all_flag:
 			list_of_substrs.append(''.join(element for element in string_list))	
 
-		# criteria ii
+		# criteria ii with the addition that there is only one word
+		# 	with length >=4 which is present
 		if big_count_flag == 1:					
 
-			# lists are needed to maintain order when wordifying
+			# lists are needed to maintain order when wordifying, but are slow
+			# 	when checking for presence in some other list
 			sub_strings_list1 = get_substring_combos(big_words[0], combos_dict)  
 			
 			# for when the word itself may be present and not just its subwords
 			sub_strings_list1.append({big_words[0]})
 
-			# sets are faster to check against other sets
+			# sets are faster when checking in other bigger sets, but the order of the words
+			#	is lost 
 			sub_strings_set1 = [set(list_ele) for list_ele in sub_strings_list1] 
 			
 			for sub_set1, sub_list1 in zip(sub_strings_set1, sub_strings_list1):
 				if sub_set1.issubset(dictionary):
 					
 					new_substr1 = '-'.join(element for element in sub_list1)
+					# big_words[0] is the sub-word that is being replaced by its combos
 					temp_reference[reference.index(big_words[0])] = new_substr1
 					list_of_substrs.append(''.join(element for element in temp_reference))			
 		
@@ -444,30 +458,39 @@ def get_desired_wordifications(string, dictionary, combos_dict):
 		elif big_count_flag ==2:
 			
 			# in a 10 digit US phone number, there can be a maximum of only 2 subwords
-			# that have lenghts >= 4, which is why we are able to hard-code this criteria v
-			# duct-tape solution and very slow! Find a better method.
+			# 	that have lengths >= 4, which is why we are able to hard-code criteria v
+			# ** duct-tape solution and very slow! Find a better method.
 
 			sub_strings_list1 = get_substring_combos(big_words[0], combos_dict)
 			sub_strings_list2 = get_substring_combos(big_words[1], combos_dict)
 			
 			# for when the word itself may be present and not just its subwords
+			# eg. PAINT is the word which is present and PA-INT are the sub-words
+			#	which are also present
 			sub_strings_list1.append({big_words[0]})
 			sub_strings_list2.append({big_words[1]})
 			
+			# convert to a set for checking in the dictionary
 			sub_strings_set1 = [set(list_ele) for list_ele in sub_strings_list1]
 			sub_strings_set2 = [set(list_ele) for list_ele in sub_strings_list2]
 			
 			for sub_set1, sub_list1 in zip(sub_strings_set1, sub_strings_list1):
+				# if the very first combination of the first sub-word is not present
+				# 	then don't bother checking for the presence of combos of second sub-word
 				if sub_set1.issubset(dictionary) == False:
 					continue
+				
 				else:
 					for sub_set2, sub_list2 in zip(sub_strings_set2, sub_strings_list2):
+						# checking if combos of both words are present
 						if sub_set1.union(sub_set2).issubset(dictionary):						
 					
 							new_substr1 = '-'.join(element for element in sub_list1)
 							new_substr2 = '-'.join(element for element in sub_list2)
 
+							# big_words[0] is the sub-word that is being replaced by its combos
 							temp_reference[reference.index(big_words[0])] = new_substr1
+							# big_words[1] is the sub-word that is being replaced by its combos
 							temp_reference[reference.index(big_words[1])] = new_substr2
 							
 							list_of_substrs.append(''.join(element for element in temp_reference))
@@ -485,15 +508,15 @@ return the count of the largest number of consecutive alphabets in the string
 
 def size_longest_substr(alnum_str):  # type(alnum_str) : string, should contain only alphanumeric characters
 	
-	count, prev = 0, 0
-	max_count = 0
+	max_count, count= 0, 0
+	
 	for i, char in enumerate(alnum_str):
 		if char.isalpha() or (char.isalpha() and not alnum_str[i+1].isnumeric() and alnum_str[i+2].isalpha()):
 			count += 1
 		
-		# give preference for contiguous alphabets without hyphens 
+		# give preference for contiguous alphabets without hyphens (so give the ones with hyphens less weightage) 
 		if char == "-":
-			count = count -0.1
+			count = count - 0.1
 		
 		elif char.isnumeric():
 			max_count = max(max_count, count)
@@ -523,6 +546,7 @@ def check_if_single_alpha(alnum_str):        # type(alphanumeric_string) : strin
 	
 	if alnum_str[0].isalpha() and not alnum_str[1].isalpha():      # criteria ii 
 		return 1
+	
 	elif alnum_str[-1].isalpha() and not alnum_str[n-1].isalpha(): # criteria iii
 		return 1
 
@@ -530,6 +554,7 @@ def check_if_single_alpha(alnum_str):        # type(alphanumeric_string) : strin
 	for i in range(1, n) :
 		if not alnum_str[i-1].isalpha() and not alnum_str[i+1].isalpha() and alnum_str[i].isalpha() :
 			return 1 
+	
 	return 0
 
 
@@ -547,6 +572,7 @@ def keypad():
 	num_word_dict = {'1':['1'],'2': ['A','B','C'], '3':['D','E','F'], '4':['G','H','I'], '5':['J','K','L'],
 					 '6':['M','N','O'], '7':['P','Q','R','S'], '8':['T','U','V'], '9':['W','X','Y','Z'], '0':['0']}
 
+	# dictionary to relate letters with its alphabetical counterpart (opposite of the above)
 	word_num_dict = {'1':'1','A':'2','B':'2','C':'2','D':'3','E':'3','F':'3','G':'4','H':'4','I':'4','J':'5','K':'5','L':'5',
 					 'M':'6','N':'6','O':'6','P':'7','Q':'7','R':'7','S':'7','T':'8','U':'8','V':'8','W':'9',
 					 'X':'9','Y':'9','Z':'9','0':'0'}
